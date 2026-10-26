@@ -22,6 +22,8 @@
 - Undo로 마지막 편집을 되돌릴 수 있다.
 - `npm run check`와 E2E 체크리스트가 통과한다.
 
-## 현재 착수 범위
+## 현재 구현 범위
 
-MVP의 `WaveformCanvas`를 다채널 lane 렌더링과 클릭 기반 타임라인 선택으로 확장했다. 다음 구현은 frame 기반 편집 명령과 undo snapshot이다.
+MVP의 `WaveformCanvas`를 다채널 lane 렌더링과 드래그 기반 타임라인 선택으로 확장했다. 트랙 대상 선택, 재생 헤드, 선택 구간 재생, master gain, channel gain 적용, -1 dBFS Normalize 대상 선택, 키보드 편집 단축키, snapshot Undo/Redo를 제공한다. 휠 기반 이동/줌, Fit, Reset mixer, 디코드 오류 피드백도 제공한다.
+
+다음 구현은 frame 단위 selection 모델 분리, 핸들 드래그, 가로 스크롤과 OfflineAudioContext 기반 EQ 고도화다.

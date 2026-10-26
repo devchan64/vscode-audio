@@ -83,7 +83,19 @@ Effects 패널은 적용 대상 `Selection`, `Track`, `Entire document`를 항�
 | + / - | 확대/축소 |
 | Home / End | 시작/끝 이동 |
 
-## 9. 적용 순서
+## 9. 현재 UI 동작
+
+- 좌측 Tracks 패널에서 전체 또는 개별 채널을 선택해 Normalize와 Apply channel gain의 대상을 정한다.
+- 타임라인을 드래그하면 선택 구간을 만들고, 짧게 클릭하면 재생 위치를 만든다.
+- 재생은 현재 선택 구간만 수행하며, 빨간 playhead로 위치를 표시한다.
+- 효과 대상은 `Selection` 또는 `Entire document`로 선택한다. Cut/Delete/Paste는 채널의 시간축 정렬을 위해 항상 모든 채널에 적용한다.
+- 휠은 가로 이동, Shift+휠 또는 Ctrl+휠은 커서 위치 기준 확대/축소다. `Fit`은 전체 오디오를 다시 표시한다.
+- `Reset mixer`는 master gain, 채널 gain/pan/mute/solo와 3-band EQ를 초기값으로 되돌린다.
+- 디코드할 수 없는 파일은 기존 편집 상태를 보존하고, 드롭 영역과 상태바에 오류를 표시한다.
+- `Fade in`과 `Fade out`은 현재 선택 구간과 선택한 트랙 대상에 직접 적용하며 Undo로 되돌릴 수 있다.
+- Space, Ctrl/Cmd+A/X/C/V/Z, Delete, Home/End, 좌우 화살표, +/- 단축키를 제공한다.
+
+## 10. 적용 순서
 
 1. 공통 시간축과 selection model
 2. multi-channel lane과 channel selection
