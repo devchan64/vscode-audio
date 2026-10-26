@@ -10,6 +10,8 @@
 ├── extension.js
 ├── docs/
 │   ├── design.md
+│   ├── ui-design.md
+│   ├── implementation-plan.md
 │   └── repository-structure.md
 └── .github/
     ├── agents/
