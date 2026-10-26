@@ -7,6 +7,13 @@
 - [ ] `FS-003` 드롭한 파일로 기존 파일이 교체된다.
 - [ ] `FS-004` 무음, 짧은 파일, 긴 파일의 파형이 표시된다.
 
+## E2E 실행 환경
+
+- [ ] `npm install` 후 `npm run test:e2e`가 Extension Development Host를 실행한다.
+- [ ] 테스트가 임시 mono PCM WAV 픽스처를 생성하고 확장 명령을 활성화한다.
+- [ ] E2E 실패 시 Extension Development Host와 테스트 로그를 보존해 원인을 확인한다.
+- [ ] 네트워크가 필요한 VS Code 다운로드 실패와 제품 기능 실패를 구분한다.
+
 ## 재생과 선택
 
 - [ ] `FS-010` 시작/끝 역전 입력이 허용되지 않는다.

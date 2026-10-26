@@ -11,6 +11,14 @@
   "contributes": {
     "commands": [{ "command": "audioWaveEditor.open", "title": "Audio Wave Editor: Open" }]
   },
-  "scripts": { "package": "vsce package --allow-missing-repository", "lint": "node --check extension.js" },
-  "devDependencies": { "@vscode/vsce": "^3.2.2" }
+  "scripts": {
+    "check": "node --check extension.js && node --check test/e2e/runTest.js && node --check test/e2e/suite/index.js",
+    "test:e2e": "node test/e2e/runTest.js",
+    "package": "vsce package --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.2.2",
+    "mocha": "^11.7.2"
+  }
 }
