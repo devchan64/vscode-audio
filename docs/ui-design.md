@@ -28,6 +28,14 @@
 | Mixer / Effects | 채널별 볼륨·팬·뮤트·솔로와 선택 영역 이펙트 |
 | Status bar | 선택 길이, 현재 시간, sample rate, peak, 오류 |
 
+### 웨이브 에디터 UI 원칙
+
+- **Transport first**: 파일 열기, 구간 재생, 정지, 믹스다운, WAV 내보내기를 상단 한 줄에 둔다.
+- **Timeline center**: 파형과 시간 눈금이 가장 넓은 중앙 영역을 차지한다.
+- **Track header left**: 전체 또는 채널을 선택해 선택 영역 이펙트의 대상을 분명히 한다.
+- **Inspector right**: 채널 믹서, 효과 범위, EQ를 우측에 고정해 재생·편집과 충돌하지 않게 한다.
+- **Status always visible**: 파일 메타데이터·선택 범위·오류를 하단과 상단 상태 문구에서 확인한다.
+
 ## 3. 채널별 타임라인
 
 각 채널은 동일한 시간축을 공유하는 수평 lane이다. lane 왼쪽에 채널명·번호·mute·solo를 표시하고, 모든 lane의 선택 시작·끝을 수직으로 정렬한다. 채널을 지정하면 해당 채널에만 편집하고, 지정하지 않으면 모든 채널에 적용한다. 채널별 스크롤은 금지하고 타임라인 전체를 함께 스크롤한다.
@@ -87,7 +95,7 @@ Effects 패널은 적용 대상 `Selection`, `Track`, `Entire document`를 항�
 
 - 좌측 Tracks 패널에서 전체 또는 개별 채널을 선택해 Normalize와 Apply channel gain의 대상을 정한다.
 - 타임라인을 드래그하면 선택 구간을 만들고, 짧게 클릭하면 재생 위치를 만든다.
-- 재생은 현재 선택 구간만 수행하며, 빨간 playhead로 위치를 표시한다.
+- 재생은 현재 선택 구간을 수행하며, 선택이 없으면 재생 커서부터 파일 끝까지 수행한다. Play 전에 AudioContext를 resume해 브라우저 자동 재생 정책으로 인한 무음을 막고, 빨간 playhead로 위치를 표시한다.
 - 효과 대상은 `Selection` 또는 `Entire document`로 선택한다. Cut/Delete/Paste는 채널의 시간축 정렬을 위해 항상 모든 채널에 적용한다.
 - 휠은 가로 이동, Shift+휠 또는 Ctrl+휠은 커서 위치 기준 확대/축소다. `Fit`은 전체 오디오를 다시 표시한다.
 - `Reset mixer`는 master gain, 채널 gain/pan/mute/solo와 3-band EQ를 초기값으로 되돌린다.
