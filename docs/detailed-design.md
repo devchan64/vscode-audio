@@ -132,6 +132,28 @@ interleaved 순서로 채널을 기록하고, 음수는 `value * 32768`, 양수�
 - 화면 폭 기준으로 downsample하여 긴 파일도 렌더링한다.
 - 파일·뷰포트·선택 변경 시에만 다시 그린다.
 
+## 5.1 아날로그 그래프 타임라인
+
+타임라인은 편집 위치를 결정하는 기준 좌표계다. 파형 캔버스와 시간 눈금은 동일한 변환을 공유한다.
+
+```text
+viewportStart = visible start in seconds
+viewportEnd   = visible end in seconds
+pixelsPerSec  = canvasWidth / (viewportEnd - viewportStart)
+x = (time - viewportStart) * pixelsPerSec
+```
+
+- 시간 눈금은 1/2/5 계열 간격을 사용한다: `0.1, 0.2, 0.5, 1, 2, 5초`.
+- 큰 눈금에는 시간 라벨, 작은 눈금에는 선만 표시한다.
+- 0 dB 기준선은 중앙에 굵게 그리고 ±6/±12 dB 보조선을 표시한다.
+- stereo는 채널별 lane, mono는 하나의 lane을 사용한다.
+- 선택 영역은 반투명하게 칠하고 양 끝에 draggable handle을 둔다.
+- 재생 헤드는 수직선과 현재 시간 라벨로 표시한다.
+
+상호작용은 캔버스 클릭으로 헤드 이동, 드래그로 선택, Shift+휠로 커서 중심 줌, 휠로 가로 스크롤, Space로 재생/정지를 제공한다. 줌 시 커서 아래 시간은 고정한다.
+
+렌더링 순서는 배경·dB 기준선 → 채널별 envelope → 선택 영역 → 시간 눈금 → 재생 헤드·핸들이다. envelope는 캐시하며 줌 배율이 바뀔 때 필요한 해상도만 다시 계산한다.
+
 ## 6. 재생 그래프
 
 현재 MVP는 처리된 `AudioBuffer`를 `AudioBufferSourceNode`로 재생한다. 재생할 때마다 source를 새로 만들고 Stop 또는 종료 시 참조를 제거한다.

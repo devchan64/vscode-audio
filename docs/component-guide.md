@@ -7,6 +7,8 @@
 | `EditorShell` | 전체 Webview 레이아웃과 상태 표시 | MVP 통합 구현 |
 | `FileDropZone` | 파일 열기·드래그 앤 드롭 | MVP 통합 구현 |
 | `WaveformCanvas` | 파형과 격자 렌더링 | MVP 통합 구현 |
+| `TimelineChart` | 시간 눈금, dB 기준선, 줌·스크롤 좌표계 | 후속 구현 |
+| `PlayheadOverlay` | 재생 위치와 선택 핸들 표시 | 후속 구현 |
 | `TransportControls` | Play/Stop과 선택 구간 표시 | MVP 통합 구현 |
 | `ChannelLevelPanel` | 채널별 게인 입력 | MVP 통합 구현 |
 | `EqualizerPanel` | Low/Mid/High 보정 입력 | MVP 통합 구현 |
@@ -35,6 +37,8 @@ type HostMessage =
 현재 `extension.js`에 통합된 구현은 다음 단위로 분리한다.
 
 - `WaveformRenderer`: AudioBuffer를 화면 폭에 맞게 envelope로 축약
+- `TimelineChart`: time-to-pixel 변환, 1/2/5 눈금, dB 기준선, 줌·스크롤
+- `PlayheadOverlay`: 재생 헤드, 선택 영역, 드래그 핸들
 - `AudioOperations`: gain, EQ, normalize, mix, clamp
 - `WavEncoder`: RIFF/WAVE 헤더와 PCM16 직렬화
 - `PlaybackController`: AudioContext와 BufferSource 수명주기
