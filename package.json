@@ -1,7 +1,7 @@
 {
   "name": "vscode-audio-wave-editor",
   "displayName": "Audio Wave Editor",
-  "description": "Waveform and basic audio editing for WAV and MP3 files.",
+  "description": "Waveform and basic audio editing for WAV, MP3, and Web Audio-compatible formats.",
   "version": "0.1.0",
   "publisher": "local",
   "engines": { "vscode": "^1.85.0" },
@@ -9,8 +9,7 @@
   "activationEvents": ["onCommand:audioWaveEditor.open"],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{ "command": "audioWaveEditor.open", "title": "Audio Wave Editor: Open" }],
-    "menus": { "explorer/context": [{ "command": "audioWaveEditor.open", "when": "resourceExtname == .wav || resourceExtname == .mp3" }] }
+    "commands": [{ "command": "audioWaveEditor.open", "title": "Audio Wave Editor: Open" }]
   },
   "scripts": { "package": "vsce package --allow-missing-repository", "lint": "node --check extension.js" },
   "devDependencies": { "@vscode/vsce": "^3.2.2" }

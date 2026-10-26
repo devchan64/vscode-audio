@@ -2,9 +2,9 @@
 
 ## 제품 범위와 기준
 
-- 이 저장소는 WAV/MP3를 열어 파형을 보고 기본 편집하는 VS Code 확장 `Audio Wave Editor`를 개발한다.
+- 이 저장소는 Web Audio API가 실제로 디코드할 수 있는 오디오 포맷만 열어 파형을 보고 기본 편집하는 VS Code 확장 `Audio Wave Editor`를 개발한다.
 - 핵심 범위는 파일 열기, 파형 표시, 재생 구간 선택, 채널별 게인, 3-band EQ, Normalize, 믹싱, WAV 내보내기다.
-- 기능 범위와 구현 상태의 기준 문서는 `docs/design.md`다. 범위가 바뀌면 README와 설계 문서를 함께 갱신한다.
+- 기능 범위와 구현 상태의 기준 문서는 `docs/design.md`이며, 구현 계약과 처리 알고리즘은 `docs/detailed-design.md`에 둔다. 범위가 바뀌면 README와 설계 문서를 함께 갱신한다.
 - 사용자의 명시적 요청은 이 문서보다 우선한다.
 
 ## 현재 코드 구조
@@ -22,7 +22,7 @@
 ## 구현 원칙
 
 - 오디오 데이터는 `Float32Array`와 `AudioBuffer`를 기준으로 처리한다. 원본 버퍼를 직접 훼손하는 연산은 명시적인 편집 동작에서만 허용한다.
-- WAV/MP3 입력은 Web Audio API로 디코드하고, 내보내기는 PCM WAV로 명확히 표시한다. MP3 인코딩을 지원한다고 문서화하지 않는다.
+- 모든 입력은 Web Audio API의 `decodeAudioData` 성공 여부로 지원을 판정한다. 확장자나 MIME만으로 지원을 보장하지 않는다. 내보내기는 PCM WAV로 표시하며 MP3 인코딩은 지원하지 않는다.
 - 채널 수, sample rate, 길이, 선택 구간을 보존하거나 변경할 때 사용자에게 상태를 표시한다.
 - Webview는 nonce CSP를 사용한다. 메시지 타입과 숫자 범위를 검증하고 오류를 조용히 무시하지 않는다.
 - Normalize는 peak 기준 0 dBFS를 넘지 않아야 한다. EQ와 채널 게인은 클리핑을 방지한다.

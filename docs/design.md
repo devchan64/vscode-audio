@@ -8,7 +8,7 @@ VS Code 안에서 음성·음악 파일의 기본 편집을 빠르게 수행한�
 
 ### 지원
 
-- WAV, MP3 디코드
+- Web Audio API가 실제로 디코드할 수 있는 오디오 포맷
 - 전체 파형 및 선택 구간 표시
 - 선택 구간 재생
 - 채널별 게인 조절
@@ -16,6 +16,8 @@ VS Code 안에서 음성·음악 파일의 기본 편집을 빠르게 수행한�
 - Peak Normalize
 - stereo-to-mono 믹싱
 - PCM16 WAV 내보내기
+
+입력 포맷의 지원 여부는 확장자가 아니라 VS Code Webview의 `decodeAudioData` 성공 여부로만 판정한다. 디코드에 실패한 파일은 지원하지 않는다.
 
 ### 후속 범위
 
