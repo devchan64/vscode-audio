@@ -1,0 +1,9 @@
+.git/**
+.vscode-test/**
+node_modules/**
+test/**
+docs/**
+.github/**
+.agents/**
+AGENTS.md
+*.vsix

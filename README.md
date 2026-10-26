@@ -6,7 +6,9 @@ An initial VS Code extension for basic WAV/MP3 and Web Audio-compatible format e
 
 1. `npm install`
 2. Open this folder in VS Code.
-3. Press `F5` and run **Audio Wave Editor: Open** from the Command Palette, or right-click a `.wav`/`.mp3` file.
+3. Press `F5` and run **Audio Wave Editor: Open** from the Command Palette, or use **Open With... → Audio Wave Editor** on a supported audio file.
+
+For extension debugging, open `vscode-audio.code-workspace` first. Do not start F5 from the separate `vscode-markdown` workspace.
 
 `npm run check` validates JavaScript syntax. `npm run package` creates the VSIX package.
 

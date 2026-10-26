@@ -3,10 +3,18 @@
   "configurations": [
     {
       "name": "Run Audio Editor Extension",
+      "presentation": {
+        "group": "Audio Wave Editor",
+        "order": 1
+      },
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
+      "cwd": "${workspaceFolder}",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "env": {
+        "VSCODE_AUDIO_WORKSPACE": "${workspaceFolder}"
+      },
       "outFiles": ["${workspaceFolder}/**/*.js"],
       "preLaunchTask": "npm: check"
     }

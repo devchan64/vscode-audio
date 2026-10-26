@@ -6,10 +6,16 @@
   "publisher": "local",
   "engines": { "vscode": "^1.85.0" },
   "categories": ["Other"],
-  "activationEvents": ["onCommand:audioWaveEditor.open"],
+  "activationEvents": ["onCommand:audioWaveEditor.open", "onCustomEditor:audioWaveEditor.editor"],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{ "command": "audioWaveEditor.open", "title": "Audio Wave Editor: Open" }]
+    "commands": [{ "command": "audioWaveEditor.open", "title": "Audio Wave Editor: Open" }],
+    "customEditors": [{
+      "viewType": "audioWaveEditor.editor",
+      "displayName": "Audio Wave Editor",
+      "selector": [{ "filenamePattern": "*.wav" }, { "filenamePattern": "*.mp3" }, { "filenamePattern": "*.ogg" }, { "filenamePattern": "*.opus" }, { "filenamePattern": "*.webm" }, { "filenamePattern": "*.m4a" }, { "filenamePattern": "*.aac" }],
+      "priority": "option"
+    }]
   },
   "scripts": {
     "check": "node --check extension.js && node --check test/e2e/runTest.js && node --check test/e2e/suite/index.js",

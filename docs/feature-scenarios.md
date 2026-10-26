@@ -8,7 +8,7 @@
 
 ### FS-001 디코드 가능한 오디오 파일 열기 — 지원
 
-사용자가 Command Palette의 `Audio Wave Editor: Open`으로 파일을 연다. Webview는 `decodeAudioData`를 호출하고 성공한 경우에만 duration, sample rate, channel 수를 표시한다. 확장자와 MIME은 파일 선택 보조 정보일 뿐 지원 판정이 아니다.
+사용자가 Command Palette의 `Audio Wave Editor: Open` 또는 VS Code의 `Open With... → Audio Wave Editor`로 파일을 연다. Webview는 `decodeAudioData`를 호출하고 성공한 경우에만 duration, sample rate, channel 수를 표시한다. 확장자와 MIME은 파일 선택 보조 정보일 뿐 지원 판정이 아니다.
 
 ### FS-003 드래그 앤 드롭 — 지원
 
