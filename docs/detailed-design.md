@@ -82,7 +82,7 @@ type EditorState = {
 
 ### 4.2 EQ
 
-MVP에서는 세 밴드 값을 기본 보정 계수로 사용한다. 정밀한 EQ가 필요해지면 `BiquadFilterNode`와 `OfflineAudioContext`를 도입한다.
+미리 듣기와 WAV 내보내기는 `OfflineAudioContext`에서 `BiquadFilterNode`를 직렬로 적용한다. Low는 250 Hz lowshelf, Mid는 1 kHz peaking(Q=1), High는 4 kHz highshelf이며 각 주파수는 Nyquist의 95% 이하로 제한한다. 각 밴드의 게인은 -12–12 dB다. 채널·마스터 게인과 pan을 먼저 적용하고 EQ 렌더링 후 출력을 [-1, 1]로 제한한다. `Apply EQ`는 선택한 프레임 구간과 대상 채널만 별도의 오프라인 필터로 처리하고 결과를 원본 버퍼에 적용한다. 경계에서 필터 상태는 초기화되며 출력은 [-1, 1]로 제한한다. 적용 후 미리 듣기 EQ는 0 dB로 초기화하고 이력에서 Undo/Redo할 수 있다.
 
 ```ts
 type EqBand = {
@@ -96,9 +96,10 @@ type EqBand = {
 ### 4.3 Normalize
 
 ```text
-peak = max(abs(sample)) for every channel and frame
-scale = peak > 0 ? min(1 / peak, 1) : 1
-output = input * scale
+peak = max(abs(sample)) for the selected channels and frames
+target = 10 ^ (-1 / 20)  // -1 dBFS
+scale = peak > 0 ? target / peak : 1
+output = clamp(input * scale, -1, 1)
 ```
 
 무음 파일은 변경하지 않는다. Normalize는 현재 전체 버퍼에 적용한다.
@@ -134,7 +135,7 @@ interleaved 순서로 채널을 기록하고, 음수는 `value * 32768`, 양수�
 
 ## 5.1 아날로그 그래프 타임라인
 
-타임라인은 편집 위치를 결정하는 기준 좌표계다. 파형 캔버스와 시간 눈금은 동일한 변환을 공유한다.
+타임라인은 편집 위치를 결정하는 기준 좌표계다. 파형 차트 위에 별도 룰러를 두며, 파형 캔버스와 시간 눈금은 동일한 변환을 공유한다.
 
 ```text
 viewportStart = visible start in seconds
@@ -143,23 +144,22 @@ pixelsPerSec  = canvasWidth / (viewportEnd - viewportStart)
 x = (time - viewportStart) * pixelsPerSec
 ```
 
-- 시간 눈금은 1/2/5 계열 간격을 사용한다: `0.1, 0.2, 0.5, 1, 2, 5초`.
-- 큰 눈금에는 시간 라벨, 작은 눈금에는 선만 표시한다.
-- 0 dB 기준선은 중앙에 굵게 그리고 ±6/±12 dB 보조선을 표시한다.
+- 향후 시간 눈금은 1/2/5 계열 간격과 큰 눈금·작은 눈금을 사용한다: `0.1, 0.2, 0.5, 1, 2, 5초`.
+- 향후 0 dB 기준선과 ±6/±12 dB 보조선을 표시한다.
 - stereo는 채널별 lane, mono는 하나의 lane을 사용한다.
 - 각 채널의 접기 버튼은 해당 파형 lane을 축소하며, 공통 시간축과 재생·편집 대상은 유지한다. 파일을 새로 열거나 mono로 믹싱하면 접기 상태를 초기화한다.
-- 선택 영역은 반투명하게 칠하고 양 끝에 draggable handle을 둔다.
-- 재생 헤드는 수직선과 현재 시간 라벨로 표시한다.
+- 선택 영역은 반투명하게 칠하며 양 끝의 핸들을 드래그하거나 포커스 후 방향키로 프레임 단위로 이동한다. 경계는 서로 넘어가지 않으며 핸들 조작 시 최소 한 프레임을 유지한다. 좁은 선택에서는 핸들을 세로로 분리하고 화면 경계에서 잘리지 않게 한다.
+- 재생 헤드는 수직선으로 표시하며, 현재 시간 라벨은 향후 제공한다.
 
-상호작용은 캔버스 클릭으로 헤드 이동, 드래그로 선택, Shift+휠로 커서 중심 줌, 휠로 가로 스크롤, Space로 재생/정지를 제공한다. 줌 시 커서 아래 시간은 고정한다.
+파형 아래의 스크롤바는 전체 길이 대비 viewport 시작과 길이를 비례해 표시하며 드래그, 트랙 클릭, 키보드 이동을 지원한다. 줌·이동과 오디오 길이 변경 시 표시를 동기화한다. 상호작용은 캔버스 클릭으로 헤드 이동, 드래그로 선택, Shift+휠로 커서 중심 줌, 휠로 가로 스크롤, Space로 재생/정지를 제공한다. 줌 시 커서 아래 시간은 고정한다.
 
-렌더링 순서는 배경·dB 기준선 → 채널별 envelope → 선택 영역 → 시간 눈금 → 재생 헤드·핸들이다. envelope는 캐시하며 줌 배율이 바뀔 때 필요한 해상도만 다시 계산한다.
+현재 MVP는 별도 룰러에 시간 라벨과 눈금을 그리고, 파형 캔버스에는 시간 격자·채널 파형·선택 영역·재생 헤드를 그린다. 룰러와 파형은 같은 시간 변환을 사용한다. 1/2/5 계열 눈금, 세부 눈금과 envelope 캐시는 향후 구현 목표다.
 
 ## 6. 재생 그래프
 
 현재 MVP는 처리된 `AudioBuffer`를 `AudioBufferSourceNode`로 재생한다. 재생할 때마다 source를 새로 만들고 Stop 또는 종료 시 참조를 제거한다.
 
-후속 구조는 `AudioBufferSource → Channel Gain → EQ → Master Gain → Destination`이다. 최종 내보내기는 동일 파라미터를 `OfflineAudioContext`에 적용한다.
+채널 gain·pan·mute/solo와 master gain을 버퍼에 반영한 뒤 `OfflineAudioContext`에서 3-band EQ를 렌더링한다. 재생과 WAV 내보내기는 같은 처리 경로를 사용한다.
 
 ## 7. 메시지 계약
 
@@ -193,4 +193,14 @@ type WebviewToExtension =
 3. `WavEncoder` 단위 테스트와 RIFF 검증
 4. `WaveformRenderer`와 `PlaybackController` 분리
 5. Extension Host 저장 메시지 검증·오류 응답 추가
-6. trim/fade/undo와 OfflineAudioContext 기반 EQ 고도화
+6. trim과 고급 EQ 고도화
+
+## 커스텀 문서 이력과 저장
+
+Fade, Normalize, Gain 및 EQ 적용은 변경 대상 채널과 프레임 범위의 편집 전후 `Float32Array`와 선택·채널 설정을 이력에 저장한다. 커스텀 에디터는 이 구간을 `CustomDocumentEditEvent`에 연결하고 Webview와 확장 호스트가 typed array로 주고받는다. VS Code가 Undo/Redo를 호출하면 Webview에 해당 구간을 복원하고 응답을 기다린다. 독립 Webview도 동일한 구간 이력을 자체 스택에 보관한다. Cut, Delete, Paste와 mono 믹싱 등 길이나 채널 수가 바뀌는 편집은 전체 스냅샷을 사용한다.
+
+일반 저장은 WAV 원본에만 PCM16으로 기록한다. 다른 형식의 원본은 Save As에서 WAV를 선택해야 한다. 저장은 편집된 오디오 버퍼를 기록하며 미리 듣기용 믹서·EQ는 적용하지 않는다. 이를 포함한 출력은 Export WAV를 사용한다. 백업은 Float32 샘플과 편집 상태를 보존하며 복구 시 새 Webview에 적용한다. 되돌리기는 원본 파일을 다시 디코드한다. 길이나 채널 수가 바뀌는 편집과 저장·백업은 전체 버퍼를 복사하거나 전달하므로 긴 파일에서 메모리와 처리 시간이 많이 필요하다. 이력 메모리 예산과 디스크 보관은 아직 구현하지 않았다.
+
+### 처리 중 입력 잠금
+
+오디오 디코드, 편집·복원, Undo/Redo 및 WAV 준비는 Webview 내부에 진행 상태를 표시하고 편집 영역을 비활성화한다. 중첩 작업은 참조 수로 관리하며 성공 또는 실패 시 잠금을 해제한다. VS Code 이력 요청은 완료 응답이나 시간 초과 시 잠금을 해제한다. 이 잠금은 Webview 내부 입력에 적용된다.

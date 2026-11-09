@@ -8,12 +8,14 @@
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────┐
-│ Header: 파일명 | Undo | Redo | Save | Zoom | 재생 상태               │
+│ Header: 파일명 | File / Edit / View | 상태                           │
+│ Toolbar: Play / Stop / Mix | Zoom in / Zoom out                      │
 ├───────────────┬───────────────────────────────────┬──────────────────┤
 │ Track panel   │ Timeline editor                   │ Mixer / Effects  │
-│ CH 1  M S     │ time ruler                         │ volume / pan     │
-│ CH 2  M S     │ CH 1 waveform + selection         │ mute / solo      │
-│ Add / hide    │ CH 2 waveform + playhead          │ Normalize / EQ   │
+│               │ time ruler (별도 영역)            │ (접기 가능)     │
+│ CH 1          │ CH 1 waveform + fold              │ volume / pan     │
+│ CH 2          │ CH 2 waveform + selection         │ mute / solo      │
+│ All channels  │ selection + playhead              │ Normalize / EQ   │
 │               │ cut / copy / paste / delete       │ Apply selection  │
 ├───────────────┴───────────────────────────────────┴──────────────────┤
 │ Status: selection time | sample rate | channels | peak | messages   │
@@ -22,15 +24,16 @@
 
 | 영역 | 책임 |
 | --- | --- |
-| Header | 파일, Undo/Redo, 저장, 줌, 재생 상태 |
-| Track panel | 채널 선택, mute/solo, 표시/숨김, 채널 이름 |
+| Header | 파일명, File/Edit/View 메뉴, 상태 메시지 |
+| Toolbar | 재생, 정지, mono 믹싱과 확대·축소 |
+| Track panel | 전체 또는 개별 채널을 이펙트 대상으로 선택 |
 | Timeline editor | 시간 눈금, 채널별 파형, 선택, playhead, 편집 명령 |
 | Mixer / Effects | 채널별 볼륨·팬·뮤트·솔로와 선택 영역 이펙트 |
 | Status bar | 선택 길이, 현재 시간, sample rate, peak, 오류 |
 
 ### 웨이브 에디터 UI 원칙
 
-- **Transport first**: 재생, 정지, 믹스다운 컨트롤을 타임라인 위에 항상 표시하고 파일 열기와 WAV 내보내기는 File 메뉴에 둔다.
+- **Transport first**: 재생, 정지, 믹스다운과 줌 컨트롤을 메뉴 아래 툴바에 표시하고 파일 열기와 WAV 내보내기는 File 메뉴에 둔다.
 - **Timeline center**: 파형과 시간 눈금이 가장 넓은 중앙 영역을 차지한다.
 - **Track header left**: 전체 또는 채널을 선택해 선택 영역 이펙트의 대상을 분명히 한다.
 - **Inspector right**: 채널 믹서, 효과 범위, EQ를 우측에 고정해 재생·편집과 충돌하지 않게 한다.
@@ -50,7 +53,7 @@ type TimelineSelection = {
 };
 ```
 
-시간이 아니라 sample frame을 저장해 Cut/Copy/Paste에서 반올림 오차를 막는다. 빈 타임라인 드래그는 새 선택, 선택 드래그는 이동, 핸들 드래그는 경계 이동이다. Shift+클릭은 선택 확장, Esc는 해제, Shift+방향키는 선택 확장에 사용한다.
+선택 시작과 끝을 sample frame으로 저장해 Cut/Copy/Paste에서 반올림 오차를 막는다. 타임라인 드래그는 새 선택, 선택 경계 핸들 드래그는 경계 이동이다. 핸들에 포커스를 두고 좌우 방향키는 한 프레임, Shift+방향키는 10프레임 이동하며 경계는 서로 넘어가지 않으며 핸들로 조절할 때 최소 한 프레임을 유지한다. 좁은 선택에서도 두 핸들을 세로로 분리하고 화면 경계에서 잘리지 않게 표시한다. Esc는 선택을 해제한다. 선택 이동과 Shift+클릭 확장은 후속 기능이다.
 
 ## 5. 편집 기능
 
@@ -61,7 +64,7 @@ type TimelineSelection = {
 - Paste는 playhead 위치에 삽입한다. mono→stereo는 복제하고 stereo→mono는 평균 downmix한다.
 - Delete는 클립보드를 갱신하지 않고 선택 구간만 제거한다.
 - 대상 채널이 `all`이면 모든 채널에서 동일 frame 범위를 변경해 시간축을 유지한다.
-- Undo/Redo 초기 구현은 명령 단위 snapshot으로 제공한다.
+- 오디오 편집의 Undo/Redo는 명령 단위로 구간 이력 또는 전체 snapshot을 사용한다. 커스텀 에디터에서는 VS Code의 이력과 연결하고 독립 창에서는 자체 이력을 사용한다.
 
 ## 6. 믹싱 패널
 
@@ -69,11 +72,11 @@ type TimelineSelection = {
 
 ## 7. 선택 영역 이펙트
 
-Effects 패널은 적용 대상 `Selection`, `Track`, `Entire document`를 항상 표시한다.
+Effects 패널은 범위 `Selection` 또는 `Entire document`를 표시한다. 대상 채널은 Tracks에서 선택한다.
 
 - Normalize: 선택 또는 전체 영역의 peak를 target dBFS로 보정하고 예상 peak를 표시한다.
 - Gain: 선택 영역에 dB 또는 선형 gain을 적용하고 clipping을 경고한다.
-- EQ: Low/Mid/High를 제공하며 후속으로 parametric band를 추가한다.
+- EQ: Low/Mid/High를 미리 듣기와 WAV 내보내기에 적용하거나 `Apply EQ`로 선택한 범위와 대상 채널에 직접 적용한다. 적용 후 미리 듣기 EQ를 0 dB로 초기화하며, 선택 시작점에서 필터 상태를 초기화한다. parametric band는 후속 기능이다.
 - Apply 후에는 Undo가 가능해야 한다.
 
 초기 MVP는 preview와 Apply를 통합할 수 있지만, 상태 모델은 비파괴 preview와 적용 결과를 분리할 수 있게 설계한다.
@@ -94,13 +97,16 @@ Effects 패널은 적용 대상 `Selection`, `Track`, `Entire document`를 항�
 ## 9. 현재 UI 동작
 
 - 상단 메뉴에서 다른 메뉴를 열면 기존에 열린 메뉴는 닫힌다.
-- Play/Pause, Stop, Mix to mono 컨트롤은 타임라인 상단에 배치한다.
-- 타임라인의 각 채널 버튼으로 파형을 접고 펼친다. 접기는 표시만 바꾸며 오디오, 재생 및 편집 대상에는 영향을 주지 않는다.
-- 상단 메뉴는 파형과 패널 위에 표시하고, 오른쪽 오디오 조절 패널은 높이가 부족하면 스크롤한다.
+- 메뉴 아래 툴바에 Play/Pause, Stop, Mix to mono, Zoom in, Zoom out을 아이콘 버튼으로 배치한다. 각 버튼은 툴팁과 접근성 이름을 제공하며 재생 상태에 따라 Play/Pause 아이콘과 설명이 바뀐다. 줌 버튼은 파일을 연 뒤 사용할 수 있고 표시 중인 구간의 중심을 기준으로 동작한다. View 메뉴의 Fit timeline은 전체 구간을 표시한다.
+- 시간 눈금은 파형 차트 위의 별도 룰러에 표시하며 줌과 이동 시 파형과 같은 시간 좌표를 유지한다.
+- Undo/Redo, 파일 디코드, 오디오 편집·복원 및 WAV 내보내기 준비 중에는 진행 문구가 있는 잠금 화면을 표시한다. 작업 완료나 오류 시 잠금을 해제하고 이전 포커스를 복원한다.
+- 각 채널 타임라인 상단의 버튼으로 파형을 접고 펼친다. 접힌 채널은 파형 대신 축소된 채널 행을 유지하며, 모든 채널을 접어도 각 행에서 다시 펼칠 수 있다. 접기는 표시만 바꾸며 오디오, 재생 및 편집 대상에는 영향을 주지 않는다.
+- 상단 메뉴는 파형과 패널 위에 표시하고, 오른쪽 오디오 조절 패널은 높이가 부족하면 스크롤한다. Channel mixer, Effects, 3-band equalizer는 각각 제목을 눌러 접고 펼칠 수 있으며 조절 값은 유지된다.
 - 좌측 Tracks 패널에서 전체 또는 개별 채널을 선택해 Normalize와 Apply channel gain의 대상을 정한다.
-- 타임라인을 드래그하면 선택 구간을 만들고, 짧게 클릭하면 재생 위치를 만든다.
+- 타임라인을 드래그하면 프레임 단위 선택 구간을 만들고, 짧게 클릭하면 재생 위치를 만든다. 선택 경계 핸들은 드래그와 키보드로 조정하며 화면 아래에 선택 프레임을 표시한다.
 - 재생은 현재 선택 구간을 수행하며, 선택이 없으면 재생 커서부터 파일 끝까지 수행한다. Play 전에 AudioContext를 resume해 브라우저 자동 재생 정책으로 인한 무음을 막고, 빨간 playhead로 위치를 표시한다.
 - 효과 대상은 `Selection` 또는 `Entire document`로 선택한다. Cut/Delete/Paste는 채널의 시간축 정렬을 위해 항상 모든 채널에 적용한다.
+- 파형 아래 스크롤바는 전체 오디오 대비 현재 표시 구간을 비례해 표시한다. 표시 구간을 드래그하거나 트랙을 클릭해 이동하고, 포커스한 상태에서 방향키·Page Up/Down·Home/End로 이동할 수 있다.
 - 휠은 가로 이동, Shift+휠 또는 Ctrl+휠은 커서 위치 기준 확대/축소다. `Fit`은 전체 오디오를 다시 표시한다.
 - `Reset mixer`는 master gain, 채널 gain/pan/mute/solo와 3-band EQ를 초기값으로 되돌린다.
 - 디코드할 수 없는 파일은 기존 편집 상태를 보존하고, 드롭 영역과 상태바에 오류를 표시한다.

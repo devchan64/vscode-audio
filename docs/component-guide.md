@@ -7,12 +7,12 @@
 | `EditorShell` | 전체 Webview 레이아웃과 상태 표시 | MVP 통합 구현 |
 | `FileDropZone` | 파일 열기·드래그 앤 드롭 | MVP 통합 구현 |
 | `WaveformCanvas` | 파형과 격자 렌더링 | MVP 통합 구현 |
-| `ChannelTimeline` | 채널별 lane, 공통 시간축, 선택 영역 | 후속 구현 |
-| `MixerPanel` | 채널 볼륨·팬·뮤트·솔로·미터 | 후속 구현 |
-| `EffectsPanel` | 선택 범위 Normalize/Gain/EQ 적용 | 후속 구현 |
-| `EditToolbar` | Cut/Copy/Paste/Delete/Undo/Redo | 후속 구현 |
-| `TimelineChart` | 시간 눈금, dB 기준선, 줌·스크롤 좌표계 | 후속 구현 |
-| `PlayheadOverlay` | 재생 위치와 선택 핸들 표시 | 후속 구현 |
+| `ChannelTimeline` | 채널별 lane, 공통 시간축, 선택 영역 | MVP 통합 구현 |
+| `MixerPanel` | 채널 볼륨·팬·뮤트·솔로·미터 | MVP 통합 구현 |
+| `EffectsPanel` | 선택 범위 Normalize/Gain/EQ 적용 | MVP 통합 구현 |
+| `EditToolbar` | Cut/Copy/Paste/Delete/Undo/Redo | Edit 메뉴에 통합 구현 |
+| `TimelineChart` | 시간 눈금, dB 기준선, 줌·스크롤 좌표계 | 부분 구현 |
+| `PlayheadOverlay` | 재생 위치와 선택 핸들 표시 | MVP 통합 구현 |
 | `TransportControls` | Play/Stop과 선택 구간 표시 | MVP 통합 구현 |
 | `ChannelLevelPanel` | 채널별 게인 입력 | MVP 통합 구현 |
 | `EqualizerPanel` | Low/Mid/High 보정 입력 | MVP 통합 구현 |
