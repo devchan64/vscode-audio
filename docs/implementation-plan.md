@@ -26,4 +26,6 @@
 
 MVP의 `WaveformCanvas`를 다채널 lane 렌더링과 드래그 기반 타임라인 선택으로 확장했다. 트랙 대상 선택, 재생 헤드, 선택 구간 재생, master gain, channel gain 적용, -1 dBFS Normalize 대상 선택, 키보드 편집 단축키, snapshot Undo/Redo를 제공한다. 휠 기반 이동/줌, Fit, Reset mixer, 디코드 오류 피드백도 제공한다.
 
+재생·정지와 mono 믹싱 컨트롤은 타임라인 위에 두고, 채널별 파형을 접거나 펼칠 수 있다. File/Edit/View 메뉴는 한 번에 하나만 열린다.
+
 다음 구현은 frame 단위 selection 모델 분리, 핸들 드래그, 가로 스크롤과 OfflineAudioContext 기반 EQ 고도화다.
