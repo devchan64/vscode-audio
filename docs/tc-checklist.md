@@ -34,6 +34,7 @@
 - [x] 툴바 아이콘에 툴팁과 접근성 이름이 있고 재생 상태에 따라 Play/Pause 설명이 바뀐다.
 - [ ] 파일을 열기 전 줌 버튼이 비활성화되고, 파일을 연 후 Zoom in/out과 View의 Fit timeline으로 룰러와 파형이 함께 확대·축소된다.
 - [ ] 다른 상단 메뉴를 열면 기존에 열린 메뉴가 닫힌다.
+- [x] Extension Host에서 메뉴 내부 클릭은 메뉴를 유지하고 메뉴 밖 클릭은 닫는지 확인한다.
 
 - [ ] 우측 Channel mixer, Effects, 3-band equalizer를 각각 마우스와 키보드로 접고 펼쳐도 조절 값과 다른 패널의 상태가 유지된다.
 
@@ -60,6 +61,8 @@
 - [x] Extension Host에서 편집 후 VS Code Undo/Redo가 샘플을 복원하고 수정 상태가 바뀐다.
 - [x] Extension Host에서 PCM WAV 저장, Save As, 백업으로 새 Webview 복구와 파일 되돌리기를 확인한다.
 - [x] mono/stereo 부분 효과의 구간 이력과 변경되지 않은 채널, 독립 창의 Undo/Redo를 Extension Host에서 확인한다.
+- [x] 44.1/48 kHz mono/stereo에서 Cut·Delete·Paste의 Undo/Redo와 stereo→mono 믹싱 복원 및 clipping 경계를 확인한다.
+- [x] 커스텀 에디터에서 Cut·Delete·Paste가 변경 구간만, mono 믹싱이 원본 채널만 이력에 보관하는지 확인한다.
 - [ ] 대용량 파일의 이력과 자동 백업 메모리 사용량을 확인한다.
 
 ## 저장

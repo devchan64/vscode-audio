@@ -30,4 +30,4 @@ MVP의 `WaveformCanvas`를 다채널 lane 렌더링과 드래그 기반 타임�
 
 frame 단위 selection 모델, 경계 핸들, 선택 범위 EQ 직접 적용, 시간 룰러와 가로 스크롤바, OfflineAudioContext 기반 3-band EQ를 구현했다. 선택 이동·확장과 고급 EQ는 후속 기능이다.
 
-커스텀 에디터는 VS Code 문서 이력과 저장·백업·되돌리기를 사용하고 독립 Webview는 자체 이력을 유지한다. Fade·Normalize·Gain·EQ 적용은 변경된 구간만 이력에 저장한다. 길이나 채널 수가 바뀌는 편집의 구간 기반 이력, 메모리 예산과 디스크 보관, 대용량 성능 측정은 후속 개선 사항이다.
+커스텀 에디터는 VS Code 문서 이력과 저장·백업·되돌리기를 사용하고 독립 Webview는 자체 이력을 유지한다. Fade·Normalize·Gain·EQ 적용은 변경된 구간만 이력에 저장한다. Cut·Delete·Paste는 변경 구간을, mono 믹싱은 원본 채널을 이력에 저장한다. 메모리 예산과 디스크 보관, 대용량 성능 측정은 후속 개선 사항이다.
