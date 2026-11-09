@@ -60,6 +60,10 @@ suite('Audio Wave Editor E2E', () => {
     await waitForWebviewState(uri, state => state.loaded);
     const req = (type, extra) => vscode.commands.executeCommand('audioWaveEditor.test.request', uri, type, extra);
     const operation = (name, arg) => vscode.commands.executeCommand('audioWaveEditor.test.provider', uri, name, arg);
+    const labels = await req('testFileLabel');
+    assert.strictEqual(labels.file, 'history-test.wav');
+    assert.strictEqual(labels.drop, 'history-test.wav');
+    assert.ok(labels.status.startsWith('history-test.wav · '));
     let viewport = await req('testScrollState');
     assert.ok(Math.abs(viewport.width - 100) < .01);
     await req('testScrollZoom');
@@ -171,6 +175,7 @@ suite('Audio Wave Editor E2E', () => {
     do { reverted = await req('getState'); if (reverted.data[0].length === savedSamples.length && reverted.data[0].every((sample, i) => Math.abs(sample - savedSamples[i]) <= 1 / 32768)) break; await new Promise(resolve => setTimeout(resolve, 100)); } while (Date.now() < deadline);
     assert.strictEqual(reverted.data[0].length, savedSamples.length);
     assert.ok(reverted.data[0].every((sample, i) => Math.abs(sample - savedSamples[i]) <= 1 / 32768), 'revert differs from saved PCM');
+    assert.strictEqual((await req('testFileLabel')).file, 'history-test.wav');
     await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor');
   });
 
@@ -271,6 +276,7 @@ suite('Audio Wave Editor E2E', () => {
     const deadline = Date.now() + 8000;
     while (!before && Date.now() < deadline) { try { before = await req('getState'); } catch (_) { await new Promise(resolve => setTimeout(resolve, 100)); } }
     assert.ok(before, 'standalone audio loaded');
+    assert.strictEqual((await req('testFileLabel')).file, 'standalone-history.wav');
     const edited = await req('testEdit');
     await new Promise(resolve => setTimeout(resolve, 100));
     await req('testUndo');
@@ -296,6 +302,23 @@ suite('Audio Wave Editor E2E', () => {
     assert.ok(matrix.results.every(item => item.outside && item.other && item.bounded && item.changed !== item.silent));
     assert.ok(matrix.emptyUnchanged, 'empty selection does not change samples');
     await vscode.commands.executeCommand('audioWaveEditor.test.closeStandalone');
+  });
+
+  test('filenames with quotes and markup are shown as text', async function () {
+    this.timeout(20000);
+    const filename = "테스트 ' <mix>.wav";
+    const uri = vscode.Uri.file(path.join(process.env.AUDIO_E2E_WORKSPACE, filename));
+    fs.writeFileSync(uri.fsPath, encodeWav({ sampleRate: 48000, channels: 1, data: [new Float32Array(4800)] }));
+    await vscode.commands.executeCommand('vscode.openWith', uri, 'audioWaveEditor.editor');
+    await waitForWebviewState(uri, value => value.loaded);
+    const req = type => vscode.commands.executeCommand('audioWaveEditor.test.request', uri, type);
+    const labels = await req('testFileLabel');
+    assert.strictEqual(labels.file, filename);
+    assert.strictEqual(labels.drop, filename);
+    assert.ok(labels.status.startsWith(filename + ' · '));
+    await vscode.commands.executeCommand('audioWaveEditor.test.provider', uri, 'revert');
+    assert.strictEqual((await req('testFileLabel')).file, filename);
+    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
   });
 
   test('MP3 fixture can be opened with the custom editor', async () => {

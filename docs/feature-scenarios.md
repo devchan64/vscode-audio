@@ -10,13 +10,13 @@
 
 사용자가 Command Palette의 `Audio Wave Editor: Open` 또는 VS Code의 `Open With... → Audio Wave Editor`로 파일을 연다. Webview는 `decodeAudioData`를 호출하고 성공한 경우에만 duration, sample rate, channel 수를 표시한다. 확장자와 MIME은 파일 선택 보조 정보일 뿐 지원 판정이 아니다.
 
-### FS-003 드래그 앤 드롭 — 지원
+### FS-003 드래그 앤 드롭 — 부분 지원
 
-디코드 가능한 오디오 파일을 Webview에 드롭하면 기존 버퍼를 교체하기 전에 새 파일을 로드한다. 로드 실패 시 기존 버퍼와 재생 상태는 유지한다.
+독립 Webview에 디코드 가능한 오디오 파일을 드롭하면 기존 버퍼를 교체하기 전에 새 파일을 로드한다. 디코드 실패 시 기존 버퍼와 재생 상태는 유지한다. 커스텀 에디터는 드롭 대신 VS Code에서 파일을 열도록 안내한다.
 
 ### FS-004 파형 표시 — 지원
 
-첫 번째 채널의 peak envelope를 캔버스에 표시한다. 파일이 없을 때는 빈 상태 안내를 표시하고, 긴 파일에서도 UI가 멈추지 않도록 화면 폭 기준으로 downsample한다.
+각 채널의 peak envelope를 캔버스에 표시한다. 파일이 없을 때는 빈 상태 안내를 표시하고, 긴 파일에서도 UI가 멈추지 않도록 화면 폭 기준으로 downsample한다.
 
 ### FS-005 채널별 타임라인 — 지원
 
