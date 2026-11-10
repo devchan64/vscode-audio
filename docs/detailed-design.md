@@ -84,6 +84,8 @@ type EditorState = {
 
 미리 듣기는 실시간 `AudioContext` 그래프에서, WAV 내보내기는 `OfflineAudioContext`에서 `BiquadFilterNode`를 직렬로 적용한다. Low는 250 Hz lowshelf, Mid는 1 kHz peaking(Q=1), High는 4 kHz highshelf이며 각 주파수는 Nyquist의 95% 이하로 제한한다. 각 밴드의 게인은 -12–12 dB다. 채널·마스터 게인과 pan을 먼저 적용하고 EQ 렌더링 후 출력을 [-1, 1]로 제한한다. `Apply EQ`는 선택한 프레임 구간과 대상 채널만 별도의 오프라인 필터로 처리하고 결과를 원본 버퍼에 적용한다. 경계에서 필터 상태는 초기화되며 출력은 [-1, 1]로 제한한다. 적용 후 미리 듣기 EQ는 0 dB로 초기화하고 이력에서 Undo/Redo할 수 있다.
 
+Effects 메뉴와 이퀄라이저 패널의 `Apply EQ`는 동일한 처리와 Effects 메뉴의 대상 채널·범위를 사용한다. 범위가 Selection이고 선택이 비어 있으면 두 버튼을 모두 비활성화한다.
+
 ```ts
 type EqBand = {
   type: 'lowshelf' | 'peaking' | 'highshelf';

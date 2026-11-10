@@ -84,6 +84,7 @@
 - [x] `FS-020` 44.1/48 kHz mono/stereo에서 Gain 적용이 대상 외 채널과 선택 구간 밖을 보존하고 clipping 및 Undo/Redo를 유지한다 (Extension Host 자동 테스트).
 - [x] Extension Host에서 44.1/48 kHz mono/stereo 각 대역의 EQ 증폭·감쇠, 무음과 clipping 경계를 확인한다.
 - [x] 선택 EQ 적용이 대상 외 채널·구간을 보존하고 빈 선택은 변경하지 않으며 Undo/Redo되는지 확인한다.
+- [x] 이퀄라이저 패널의 Apply EQ가 메뉴와 같은 대상·범위를 사용하고 미리 듣기 초기화와 Undo/Redo를 수행하는지 Extension Host에서 확인한다.
 - [x] 동일 Webview HTML의 브라우저 화면에서 좁은 선택과 한 프레임 선택의 양쪽 핸들 드래그 및 타임라인 경계 표시를 확인한다.
 - [x] Extension Host에서 한 프레임 핸들의 위치 분리와 범위 확장을 확인한다.
 - [x] stereo 클립을 mono에 Paste할 때 양 채널 평균을 사용하고 Undo로 복원한다.

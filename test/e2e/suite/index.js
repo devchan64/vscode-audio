@@ -124,7 +124,7 @@ suite('Audio Wave Editor E2E', () => {
       reset: { master: '100 percent', low: '0 decibels', mid: '0 decibels', high: '0 decibels' }
     });
     assert.deepStrictEqual(await req('testEffectAvailability'), {
-      empty: [true, true, true], gainAfter: '0.3', documentRange: [false, false, false], selected: [false, false, false]
+      empty: [true, true, true, true], gainAfter: '0.3', documentRange: [false, false, false, false], selected: [false, false, false, false]
     });
     assert.deepStrictEqual(await req('testWholeSelectionActions'), {
       whole: { cut: true, copy: false, remove: true, fade: false, title: 'Cannot remove all audio' },
@@ -388,7 +388,7 @@ suite('Audio Wave Editor E2E', () => {
     await req('testSetFrames', { start: 1000, end: 10000 });
     const before = await req('getState');
     assert.strictEqual(before.startFrame, 1000); assert.strictEqual(before.endFrame, 10000);
-    const after = await req('testApplySelectionEQ', { channel: 0, low: 12 });
+    const after = await req('testApplySelectionEQ', { channel: 0, low: 12, panel: true });
     assert.strictEqual((await req('testPreviewAccess')).low, '0 decibels', 'EQ apply resets its accessible value');
     assert.notStrictEqual(digest(after.data[0].slice(1000, 10000)), digest(before.data[0].slice(1000, 10000)));
     assert.strictEqual(digest(after.data[0].slice(0, 1000)), digest(before.data[0].slice(0, 1000)));

@@ -2,7 +2,7 @@
 
 ## 1. 화면 목표
 
-편집자는 중앙 타임라인에서 오디오를 선택하고, Tracks 또는 툴바에서 대상 채널을 확인한다. 믹서와 EQ 미리 듣기는 우측 패널에서 조절하고 효과 적용은 Effects 메뉴에서 실행한다.
+편집자는 중앙 타임라인에서 오디오를 선택하고, Tracks 또는 툴바에서 대상 채널을 확인한다. 믹서와 EQ 미리 듣기는 우측 패널에서 조절한다. 효과는 Effects 메뉴에서 적용하며 EQ는 패널에서도 직접 적용할 수 있다.
 
 ## 2. 기본 레이아웃
 
@@ -72,7 +72,7 @@ type TimelineSelection = {
 
 ## 7. 선택 영역 이펙트
 
-Effects 메뉴에서 대상 채널과 범위 `Selection` 또는 `Entire document`를 선택하고 Gain, Normalize, EQ, Fade를 적용한다. 대상 채널은 Tracks와 툴바에서도 선택한다. EQ 미리 듣기 조절은 우측 EQ 패널에 유지한다.
+Effects 메뉴에서 대상 채널과 범위 `Selection` 또는 `Entire document`를 선택하고 Gain, Normalize, EQ, Fade를 적용한다. 대상 채널은 Tracks와 툴바에서도 선택한다. 우측 EQ 패널은 미리 듣기 조절과 같은 대상·범위를 사용하는 Apply EQ 버튼을 제공한다.
 
 - Normalize: 선택 또는 전체 영역의 peak를 -1 dBFS로 보정한다. 무음은 변경하지 않는다.
 - Gain: 대상 채널의 선형 gain을 선택 또는 전체 영역에 적용하고 결과를 [-1, 1]로 제한한다.
@@ -109,7 +109,7 @@ Effects 메뉴에서 대상 채널과 범위 `Selection` 또는 `Entire document
 - 재생은 현재 선택 구간을 수행하며, 선택이 없으면 재생 커서부터 파일 끝까지 수행한다. Pause는 현재 위치를 보존하고 다음 Play에서 이어 재생하며, Stop은 선택 시작점으로 이동한다. 선택을 변경하거나 오디오를 편집하면 일시정지 위치는 초기화된다. Play 전에 AudioContext를 resume해 브라우저 자동 재생 정책으로 인한 무음을 막고, 빨간 playhead로 위치를 표시한다.
 - 효과 대상은 `Selection` 또는 `Entire document`로 선택한다. Cut/Delete/Paste는 채널의 시간축 정렬을 위해 항상 모든 채널에 적용한다.
 - 문서 전체가 선택된 경우 오디오를 모두 제거할 수 없으므로 Cut과 Delete를 비활성화한다. 단축키로 시도하면 이유를 상태에 표시하며 Copy는 사용할 수 있다.
-- 효과 범위가 `Selection`이고 선택이 비어 있으면 Apply gain, Normalize, Apply EQ를 비활성화한다. 구간을 선택하거나 `Entire document`로 전환하면 다시 사용할 수 있다.
+- 효과 범위가 `Selection`이고 선택이 비어 있으면 Apply gain, Normalize와 메뉴·패널의 Apply EQ를 비활성화한다. 구간을 선택하거나 `Entire document`로 전환하면 다시 사용할 수 있다.
 - 파형 아래 스크롤바는 전체 오디오 대비 현재 표시 구간을 표시한다. 손잡이에는 최소 크기가 적용되므로 극단적인 확대에서는 표시 길이가 실제 비율보다 클 수 있다. 드래그·트랙 클릭·방향키·Page Up/Down·Home/End로 이동할 수 있다.
 - Cut·Delete·Paste로 오디오 길이가 바뀌면 표시 범위를 새 길이 안으로 조정하고 재생 위치를 편집 시작점에 둔다. Undo/Redo 후에도 표시 범위와 스크롤바를 유효하게 유지한다.
 - 휠은 가로 이동, Shift+휠 또는 Ctrl+휠은 커서 위치 기준 확대/축소다. `Fit`은 전체 오디오를 다시 표시한다.
