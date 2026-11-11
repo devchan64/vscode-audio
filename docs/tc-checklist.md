@@ -13,6 +13,8 @@
 ## E2E 실행 환경
 
 - 테스트 호스트는 `.vscode-test` 아래의 별도 사용자 데이터와 확장 디렉터리를 사용해 개인 설정과 설치된 확장의 영향을 줄인다. 독립 Webview의 간헐적 응답 시간 초과가 완전히 해소되었는지는 추가 반복 검증이 필요하다.
+- `npm run test:e2e:screenshots`는 격리된 테스트 호스트에서 합성 오디오를 열고 README의 편집 화면과 Effects 메뉴 캡처를 `media/`에 저장한다. 캡처 전용 디버깅 포트는 기본 9227이며 `AUDIO_E2E_DEBUG_PORT`로 변경할 수 있다.
+- [x] Extension Host에서 1440×900 편집 화면과 Effects 메뉴 캡처를 생성하고 README에서 참조한다. 실제 사용자 오디오는 사용하지 않는다.
 - [ ] `npm install` 후 `npm run test:e2e`가 Extension Development Host를 실행한다.
 - [x] 테스트가 MP3 픽스처와 커스텀 에디터를 활성화한다.
 - [x] Webview가 Tracks, Selection, Transport, Mixer, Effects, Export UI를 초기화하고 디코드한 duration/sample rate/channel 정보를 확장 호스트에 전달한다.

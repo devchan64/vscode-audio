@@ -11,13 +11,15 @@ async function main() {
   fs.mkdirSync(testWorkspace, { recursive: true });
   fs.mkdirSync(testUserData, { recursive: true });
   fs.mkdirSync(testExtensions, { recursive: true });
+  const capture = process.argv.includes('--screenshots') || process.env.AUDIO_E2E_SCREENSHOTS === '1';
+  const debugPort = Number(process.env.AUDIO_E2E_DEBUG_PORT || 9227);
   await runTests({
     version: process.env.VSCODE_VERSION || 'stable',
     extensionDevelopmentPath,
     extensionTestsPath,
-    launchArgs: [testWorkspace, '--user-data-dir', testUserData, '--extensions-dir', testExtensions, '--disable-workspace-trust', '--headless', '--disable-gpu', '--no-sandbox', '--ozone-platform=headless'],
+    launchArgs: [testWorkspace, '--user-data-dir', testUserData, '--extensions-dir', testExtensions, '--disable-workspace-trust', '--headless', '--disable-gpu', '--no-sandbox', '--ozone-platform=headless', ...(capture ? [`--remote-debugging-port=${debugPort}`, '--remote-debugging-address=127.0.0.1', '--remote-allow-origins=*', '--window-size=1440,900'] : [])],
     reuseMachineInstall: true,
-    extensionTestsEnv: { AUDIO_E2E_WORKSPACE: testWorkspace }
+    extensionTestsEnv: { AUDIO_E2E_WORKSPACE: testWorkspace, AUDIO_E2E_SCREENSHOTS: capture ? '1' : '0', AUDIO_E2E_DEBUG_PORT: String(debugPort), AUDIO_E2E_ROOT: extensionDevelopmentPath }
   });
 }
 

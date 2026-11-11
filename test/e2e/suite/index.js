@@ -511,6 +511,35 @@ suite('Audio Wave Editor E2E', () => {
     assert.ok(state.channels > 0);
     assert.deepStrictEqual(state.controls, ['tracks', 'selection', 'transport', 'mixer', 'effects', 'export']);
   });
+  test('captures the editor and effects menu for the README', async function () {
+    if (process.env.AUDIO_E2E_SCREENSHOTS !== '1') this.skip();
+    this.timeout(30000);
+    const { capture } = require('../capture');
+    const rate = 44100, length = rate * 8;
+    const data = [0, 1].map(channel => Float32Array.from({ length }, (_, i) => {
+      const time = i / rate, envelope = .12 + .7 * Math.pow(Math.sin(Math.PI * time / 4), 2);
+      return envelope * (.65 * Math.sin(2 * Math.PI * (180 + channel * 60) * time) + .2 * Math.sin(2 * Math.PI * 470 * time));
+    }));
+    const uri = vscode.Uri.file(path.join(process.env.AUDIO_E2E_WORKSPACE, 'audio-demo.wav'));
+    fs.writeFileSync(uri.fsPath, encodeWav({ sampleRate: rate, channels: 2, data }));
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    await vscode.commands.executeCommand('workbench.action.closeSidebar');
+    await vscode.commands.executeCommand('workbench.action.closeAuxiliaryBar');
+    await vscode.commands.executeCommand('workbench.action.closePanel');
+    await vscode.commands.executeCommand('notifications.clearAll');
+    await vscode.commands.executeCommand('vscode.openWith', uri, 'audioWaveEditor.editor');
+    await waitForWebviewState(uri, state => state.loaded);
+    const req = (type, extra) => vscode.commands.executeCommand('audioWaveEditor.test.request', uri, type, extra);
+    await req('testSetFrames', { start: rate, end: rate * 4 });
+    await new Promise(resolve => setTimeout(resolve, 750));
+    const media = path.join(process.env.AUDIO_E2E_ROOT, 'media');
+    await capture(Number(process.env.AUDIO_E2E_DEBUG_PORT), path.join(media, 'editor.png'));
+    await req('testOpenEffectsMenu');
+    await new Promise(resolve => setTimeout(resolve, 300));
+    await capture(Number(process.env.AUDIO_E2E_DEBUG_PORT), path.join(media, 'effects.png'));
+    await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor');
+  });
+
 });
 
 module.exports.run = () => new Promise((resolve, reject) => {
