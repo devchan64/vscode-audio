@@ -51,7 +51,7 @@ Command Palette의 **Audio Wave Editor: Open**으로 독립 창을 열 수도 �
 
 E2E는 `.vscode-test` 아래의 테스트 전용 사용자 데이터와 확장 디렉터리를 사용합니다. 생성된 VSIX는 **Extensions → … → Install from VSIX…**에서 설치합니다. 패키지에는 작업 디렉터리의 현재 코드가 포함되므로 커밋하지 않은 변경도 반영됩니다.
 
-현재 확장 식별자는 `local.vscode-audio-wave-editor`입니다. Marketplace에 게시하려면 사용할 퍼블리셔를 정하고 이름의 사용 가능 여부를 다시 확인해야 합니다.
+확장 식별자는 `devchan64.vscode-audio-wave-editor`입니다. Marketplace 게시 전 이름과 표시 이름의 사용 가능 여부를 확인하세요.
 
 ## 설계 문서
 

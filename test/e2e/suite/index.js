@@ -11,8 +11,9 @@ const mocha = new Mocha({ ui: 'tdd', reporter: 'dot', timeout: 10000 });
 mocha.suite.emit('pre-require', global, __filename, mocha);
 
 async function activate() {
-  const extension = vscode.extensions.getExtension('local.vscode-audio-wave-editor');
-  if (extension) await extension.activate();
+  const extension = vscode.extensions.getExtension('devchan64.vscode-audio-wave-editor');
+  assert.ok(extension, 'Audio Wave Editor extension is registered under the expected publisher');
+  await extension.activate();
 }
 
 async function waitForSamples(req, expected) {
