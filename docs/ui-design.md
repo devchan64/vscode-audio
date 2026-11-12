@@ -68,7 +68,7 @@ type TimelineSelection = {
 
 ## 6. 믹싱 패널
 
-채널 스트립은 Gain(0–200%), Pan(-100–+100), Mute, Solo와 실시간 peak meter를 제공한다. Master는 0–200% gain을 조절하며 `Reset mixer`는 모든 채널, Master와 EQ를 초기화한다. Solo가 하나라도 켜지면 solo 채널만 재생한다. 믹서·EQ 미리 듣기 설정은 Export WAV에도 반영되지만 커스텀 문서의 일반 저장에는 반영되지 않는다.
+채널 스트립은 Gain(0–200%), Pan(-100–+100), Mute, Solo와 실시간 peak meter를 제공한다. Master는 0–200% gain을 조절하며 `Reset mixer`는 모든 채널, Master와 EQ를 초기화한다. Solo가 하나라도 켜지면 solo 채널만 재생한다. 믹서·EQ 미리 듣기 설정은 WAV/MP3 내보내기에 반영되지만 커스텀 문서의 일반 저장에는 반영되지 않는다.
 
 ## 7. 선택 영역 이펙트
 

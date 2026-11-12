@@ -5,11 +5,11 @@ function defaultWavPath(sourcePath) {
   return extension.toLowerCase() === '.wav' ? sourcePath : sourcePath.slice(0, sourcePath.length - extension.length) + '.wav';
 }
 
-async function exportWav(data, chooseTarget, writeFile) {
+async function exportWav(data, chooseTarget, writeFile, format = 'wav') {
   try {
     const target = await chooseTarget();
     if (!target) return { status: 'cancelled' };
-    if (typeof target.path !== 'string' || path.posix.extname(target.path).toLowerCase() !== '.wav') return { status: 'invalidPath' };
+    if (typeof target.path !== 'string' || path.posix.extname(target.path).toLowerCase() !== '.' + format) return { status: 'invalidPath' };
     await writeFile(target, Buffer.from(data, 'base64'));
     return { status: 'saved', target };
   } catch (error) {

@@ -19,7 +19,8 @@ VS Code 안에서 음성·음악 파일의 기본 편집을 빠르게 수행한�
 - Low/Mid/High EQ 미리 듣기와 선택 구간·대상 채널에 직접 적용
 - Peak Normalize 및 선택 구간 Fade in/out
 - stereo-to-mono 믹싱
-- PCM16 WAV 내보내기
+- PCM16 WAV 및 mono/stereo MP3 내보내기
+- 원본 옆 숫자 버전 WAV/MP3 내보내기
 
 입력 포맷의 지원 여부는 확장자가 아니라 VS Code Webview의 `decodeAudioData` 성공 여부로만 판정한다. 디코드에 실패한 파일은 지원하지 않는다.
 
@@ -27,7 +28,6 @@ VS Code 안에서 음성·음악 파일의 기본 편집을 빠르게 수행한�
 
 - 비파괴 편집 모델과 세션 간 영속 편집 이력
 - 멀티트랙 타임라인과 클립 이동
-- MP3 인코딩 내보내기
 - 트림과 크로스페이드
 - 스펙트로그램
 
@@ -45,7 +45,7 @@ flowchart LR
   Export --> Host
 ```
 
-확장 호스트는 파일 선택과 저장을 담당하고, 오디오 디코드·편집·재생은 Webview에서 수행한다. Export WAV는 Webview에서 처리된 PCM WAV를 호스트에 전달한다. 커스텀 문서의 저장·백업은 호스트가 Webview에서 편집 상태를 받아 기록한다.
+확장 호스트는 파일 선택·저장과 MP3 인코딩 Worker를 담당하고, 오디오 디코드·편집·재생은 Webview에서 수행한다. 내보내기는 Webview에서 처리된 PCM WAV를 호스트에 전달하며 MP3는 이를 Worker에서 인코딩한다. 커스텀 문서의 저장·백업은 호스트가 Webview에서 편집 상태를 받아 기록한다.
 
 ## 4. 상태와 메시지
 

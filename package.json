@@ -19,12 +19,13 @@
     }]
   },
   "scripts": {
-    "check": "node --check extension.js && node --check src/audio/document-state.js && node --check src/extension/export-wav.js && node --check test/e2e/runTest.js && node --check test/e2e/capture.js && node --check test/e2e/suite/index.js",
+    "check": "node --check extension.js && node --check src/audio/document-state.js && node --check src/extension/export-wav.js && node --check src/extension/versioned-export.js && node --check src/extension/mp3-encode.js && node --check src/extension/mp3-worker.js && node --check test/e2e/runTest.js && node --check test/e2e/capture.js && node --check test/e2e/suite/index.js",
     "test:e2e": "node test/e2e/runTest.js",
     "test:e2e:screenshots": "node test/e2e/runTest.js --screenshots",
     "test:unit": "node --test test/unit/*.test.js",
     "package": "vsce package --allow-missing-repository"
   },
+  "dependencies": { "@breezystack/lamejs": "1.2.7" },
   "devDependencies": {
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.2.2",

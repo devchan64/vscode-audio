@@ -42,6 +42,47 @@ suite('Audio Wave Editor E2E', () => {
     assert.ok(commands.includes('audioWaveEditor.open'));
   });
 
+  test('exports numbered WAV and decodable MP3 without overwriting', async function () {
+    this.timeout(30000);
+    const dir = fs.mkdtempSync(path.join(process.env.AUDIO_E2E_WORKSPACE, 'version-export-'));
+    const uri = vscode.Uri.file(path.join(dir, 'voice.wav'));
+    const rate = 44100;
+    const data = [0, 1].map(channel => Float32Array.from({ length: rate }, (_, i) => .4 * Math.sin(2 * Math.PI * (440 + channel * 100) * i / rate)));
+    const wav = encodeWav({ sampleRate: rate, channels: 2, data });
+    fs.writeFileSync(uri.fsPath, wav);
+    fs.writeFileSync(path.join(dir, 'voice_v005.wav'), 'existing');
+    const exportVersion = format => vscode.commands.executeCommand('audioWaveEditor.test.versionExport', uri, format, wav.toString('base64'));
+    const versions = await Promise.all([exportVersion('wav'), exportVersion('wav')]);
+    assert.deepStrictEqual(versions.map(v => path.basename(v.fsPath)).sort(), ['voice_v006.wav', 'voice_v007.wav']);
+    assert.strictEqual(fs.readFileSync(path.join(dir, 'voice_v005.wav'), 'utf8'), 'existing');
+    assert.deepStrictEqual(fs.readFileSync(uri.fsPath), wav);
+    const mp3 = await exportVersion('mp3');
+    assert.strictEqual(path.basename(mp3.fsPath), 'voice_v001.mp3');
+    await vscode.commands.executeCommand('vscode.openWith', uri, 'audioWaveEditor.editor');
+    await waitForWebviewState(uri, state => state.loaded);
+    const req = (type, extra) => vscode.commands.executeCommand('audioWaveEditor.test.request', uri, type, extra);
+    for (const [format, name] of [['wav', 'voice_v008.wav'], ['mp3', 'voice_v002.mp3']]) {
+      await req('testExportVersionUI', { format });
+      const file = path.join(dir, name), deadline = Date.now() + 15000;
+      let progress;
+      do { progress = await req('testExportProgress'); if (!progress.busy) break; await new Promise(resolve => setTimeout(resolve, 50)); } while (Date.now() < deadline);
+      assert.ok(!progress.busy && fs.existsSync(file) && progress.status.includes(name), `${format} version from Webview: ${JSON.stringify(progress)}`);
+    }
+    const decoded = await vscode.commands.executeCommand('audioWaveEditor.test.request', uri, 'testDecodeMp3', { data: fs.readFileSync(mp3.fsPath).toString('base64') });
+    assert.strictEqual(decoded.channels, 2);
+    assert.ok(Math.abs(decoded.duration - 1) < .1 && decoded.peak > .1, JSON.stringify(decoded));
+    await req('testSetMaster', { value: 0 });
+    await req('testExportVersionUI', { format: 'mp3' });
+    let progress;
+    const deadline = Date.now() + 15000;
+    do { progress = await req('testExportProgress'); if (!progress.busy) break; await new Promise(resolve => setTimeout(resolve, 50)); } while (Date.now() < deadline);
+    assert.ok(!progress.busy && progress.status.includes('voice_v003.mp3'), JSON.stringify(progress));
+    const silent = await req('testDecodeMp3', { data: fs.readFileSync(path.join(dir, 'voice_v003.mp3')).toString('base64') });
+    assert.strictEqual(silent.peak, 0, 'MP3 export includes the master preview gain');
+    assert.deepStrictEqual(fs.readFileSync(uri.fsPath), wav, 'export leaves the source unchanged');
+    await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor');
+  });
+
   test('MP3 fixture can be opened by the extension command', async () => {
     const fixture = path.resolve(__dirname, '../../fixtures/ash-edge-instrumental.mp3');
     await vscode.commands.executeCommand('audioWaveEditor.open', vscode.Uri.file(fixture));
