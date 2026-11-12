@@ -23,7 +23,7 @@
     "test:e2e": "node test/e2e/runTest.js",
     "test:e2e:screenshots": "node test/e2e/runTest.js --screenshots",
     "test:unit": "node --test test/unit/*.test.js",
-    "package": "vsce package --allow-missing-repository"
+    "package": "node scripts/verify-encoder-source.js && vsce package --allow-missing-repository"
   },
   "dependencies": { "@breezystack/lamejs": "1.2.7" },
   "devDependencies": {
