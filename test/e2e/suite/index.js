@@ -71,6 +71,9 @@ suite('Audio Wave Editor E2E', () => {
     const decoded = await vscode.commands.executeCommand('audioWaveEditor.test.request', uri, 'testDecodeMp3', { data: fs.readFileSync(mp3.fsPath).toString('base64') });
     assert.strictEqual(decoded.channels, 2);
     assert.ok(Math.abs(decoded.duration - 1) < .1 && decoded.peak > .1, JSON.stringify(decoded));
+    const uiDecoded = await req('testDecodeMp3', { data: fs.readFileSync(path.join(dir, 'voice_v002.mp3')).toString('base64') });
+    assert.strictEqual(uiDecoded.channels, 2);
+    assert.ok(Math.abs(uiDecoded.duration - 1) < .1 && uiDecoded.peak > .1, `Webview MP3 export: ${JSON.stringify(uiDecoded)}`);
     await req('testSetMaster', { value: 0 });
     await req('testExportVersionUI', { format: 'mp3' });
     let progress;
