@@ -2,7 +2,7 @@
   "name": "vscode-audio-wave-editor",
   "displayName": "Audio Wave Editor",
   "description": "Waveform and basic audio editing for WAV, MP3, and Web Audio-compatible formats.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "devchan64",
   "repository": { "type": "git", "url": "https://github.com/devchan64/vscode-audio.git" },
   "engines": { "vscode": "^1.85.0" },
